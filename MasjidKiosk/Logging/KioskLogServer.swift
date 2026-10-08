@@ -131,6 +131,8 @@ final class KioskLogServer {
             today=\(Self.todayString())
             logs=\(names.count)
             rows_today=\(tally?.rows ?? 0)
+            donations_today=\(tally?.donations ?? 0)
+            dollars_today=\(tally?.dollars ?? 0)
             reader_ready=\(readerReady)
 
             """

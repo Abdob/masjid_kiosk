@@ -91,14 +91,42 @@ actor KioskLog {
         return try? Data(contentsOf: directory.appendingPathComponent(file))
     }
 
-    /// Today's file and how many donations it holds, for the staff page —
-    /// the quickest way to tell whether the kiosk is recording at all.
-    func todaysTally() -> (name: String, rows: Int)? {
+    /// What today's file adds up to.
+    struct Tally: Equatable {
+        let name: String
+        /// Every row, paid or not.
+        var rows = 0
+        /// Paid donations, and what they come to.
+        var donations = 0
+        var dollars = 0
+        var notCompleted = 0
+        /// Rows staff still need to look up in the Square Dashboard.
+        var unconfirmed = 0
+    }
+
+    /// Today's file and its totals, for the staff page — also the quickest
+    /// way to tell whether the kiosk is recording at all.
+    func todaysTally() -> Tally? {
         guard let url = Self.todaysFile(),
               let text = try? String(contentsOf: url, encoding: .utf8) else { return nil }
-        // Every line but the header is one donation.
-        let rows = text.split(whereSeparator: \.isNewline).count - 1
-        return (url.lastPathComponent, max(0, rows))
+        var tally = Tally(name: url.lastPathComponent)
+        // Every line but the header is one donation attempt. The first three
+        // columns (timestamp, amount, status) never contain a comma.
+        for line in text.split(whereSeparator: \.isNewline).dropFirst() {
+            let fields = line.split(separator: ",", maxSplits: 3, omittingEmptySubsequences: false)
+            guard fields.count >= 3 else { continue }
+            tally.rows += 1
+            switch Status(rawValue: String(fields[2])) {
+            case .ok:
+                tally.donations += 1
+                tally.dollars += Int(fields[1]) ?? 0
+            case .unconfirmed:
+                tally.unconfirmed += 1
+            default:
+                tally.notCompleted += 1
+            }
+        }
+        return tally
     }
 
     /// Turn a requested name into one of our filenames, or nil. Accepts

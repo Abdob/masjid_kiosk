@@ -1,13 +1,14 @@
 import SwiftUI
 
-/// Hidden staff page (top-right corner, 5 taps): check the Square Stand's
-/// card reader, and find where to download the day's donation log.
+/// Hidden staff page (top-right corner, 5 taps): today's totals, the iPad's
+/// address, the Square Stand's card reader, and where to download the day's
+/// donation log.
 struct StaffView: View {
     let isDemo: Bool
 
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var reader = SquareReader.shared
-    @State private var tally: (name: String, rows: Int)?
+    @State private var tally: KioskLog.Tally?
 
     var body: some View {
         ScrollView {
@@ -20,6 +21,7 @@ struct StaffView: View {
                         .font(.title3.bold())
                 }
 
+                todaySection
                 readerSection
                 logSection
             }
@@ -27,6 +29,36 @@ struct StaffView: View {
         }
         .background(Color(.systemGroupedBackground))
         .task { tally = await KioskLog.shared.todaysTally() }
+    }
+
+    // MARK: - Today
+
+    private var todaySection: some View {
+        card {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Today").font(.title2.bold())
+
+                HStack(alignment: .firstTextBaseline, spacing: 16) {
+                    Text(Donation.format(tally?.dollars ?? 0))
+                        .font(.system(size: 64, weight: .heavy, design: .rounded))
+                        .monospacedDigit()
+                    let count = tally?.donations ?? 0
+                    Text("from \(count) donation\(count == 1 ? "" : "s")")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                }
+
+                if let tally, tally.notCompleted > 0 {
+                    row("Not completed", "\(tally.notCompleted)")
+                }
+                if let tally, tally.unconfirmed > 0 {
+                    Text("\(tally.unconfirmed) unconfirmed — check the Square Dashboard; these are not in the total.")
+                        .foregroundStyle(.orange).font(.headline)
+                }
+
+                row("iPad address", KioskLogServer.wifiAddress() ?? "none — check the Wi-Fi")
+            }
+        }
     }
 
     // MARK: - Card reader
@@ -97,8 +129,7 @@ struct StaffView: View {
         card {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Donation log").font(.title2.bold())
-                row("Today", tally.map { "\($0.rows) donation\($0.rows == 1 ? "" : "s") — \($0.name)" }
-                    ?? "nothing recorded yet today")
+                row("Today's file", tally?.name ?? "nothing recorded yet today")
                 Text("Download from any computer on this network")
                     .font(.title3)
                     .foregroundStyle(.secondary)
