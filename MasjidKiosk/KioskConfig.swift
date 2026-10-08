@@ -14,16 +14,16 @@ enum KioskConfig {
     /// (Developer Dashboard → your application → Credentials). A production
     /// ID starts with "sq0idp-"; a "sandbox-" ID puts the whole kiosk in
     /// Square's sandbox, where real readers don't work.
-    static let squareApplicationID = "REPLACE_WITH_APPLICATION_ID"
+    static let squareApplicationID = "sq0idp-Czmg_yWKiU756ycD7-FRug"
 
     /// A production access token for the masjid's Square account (same
     /// Credentials page). It needs the MERCHANT_PROFILE_READ, PAYMENTS_WRITE,
     /// PAYMENTS_WRITE_IN_PERSON, PAYMENTS_READ and CUSTOMERS scopes; a
     /// personal access token has all of them.
-    static let squareAccessToken = "REPLACE_WITH_ACCESS_TOKEN"
+    static let squareAccessToken = "EAAAl_iWL3NKJdpF6X4I3Mcq2LgL3Nv5AXgI6M61fl0vENZyEvArznCLfTuS3yKe"
 
     /// The community center's location (Developer Dashboard → Locations).
-    static let squareLocationID = "REPLACE_WITH_LOCATION_ID"
+    static let squareLocationID = "L2F9X7KBN2VF1"
 
     /// Square's REST API, matching the application ID's environment.
     static var squareBaseURL: URL {
@@ -86,8 +86,8 @@ enum KioskConfig {
     static let logServerPort: UInt16 = 8080
 
     /// HTTP basic-auth for the download. The log holds donors' phone numbers,
-    /// and this travels the network in the clear — change it, and keep the
-    /// kiosk off any Wi-Fi the public can join.
+    /// and this travels the network in the clear — keep the kiosk off any
+    /// Wi-Fi the public can join.
     static let logServerUser = "admin"
-    static let logServerPassword = "admin"
+    static let logServerPassword = "@ntiochMasjid2016"
 }

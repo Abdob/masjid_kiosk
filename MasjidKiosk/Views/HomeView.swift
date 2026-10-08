@@ -1,12 +1,16 @@
 import SwiftUI
 
-/// The idle screen: the masjid's logo and one big Donate button.
+/// The idle screen: the masjid's logo, one big Donate button, and the
+/// button that switches between English and Arabic.
 struct HomeView: View {
     let isDemo: Bool
     /// False in live mode while the Square Stand's reader isn't ready; the
     /// kiosk shows a banner and disables Donate until it is.
     let canTakeDonations: Bool
+    /// The language the switch button offers: the one not on screen now.
+    let otherLanguage: KioskLanguage
     let onDonate: () -> Void
+    let onSwitchLanguage: () -> Void
     /// Fired after 5 quick taps in the hidden top-right corner (staff only).
     let onStaffGesture: () -> Void
 
@@ -66,9 +70,24 @@ struct HomeView: View {
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .overlay(alignment: .topTrailing) {
-            // The staff page, without exposing anything to donors.
-            HiddenCornerTapTarget(action: onStaffGesture)
+        .overlay(alignment: .top) {
+            HStack(alignment: .top) {
+                Button(action: onSwitchLanguage) {
+                    Label(otherLanguage.name, systemImage: "globe")
+                        .font(.title2.bold())
+                        .padding(.vertical, 14)
+                        .padding(.horizontal, 24)
+                        .background(Color.accentColor.opacity(0.12), in: Capsule())
+                }
+                .padding(24)
+
+                Spacer()
+
+                // The staff page, without exposing anything to donors.
+                HiddenCornerTapTarget(action: onStaffGesture)
+            }
+            // Both stay in the same physical corners in either language.
+            .environment(\.layoutDirection, .leftToRight)
         }
     }
 }
@@ -98,9 +117,11 @@ private struct HiddenCornerTapTarget: View {
 }
 
 #Preview("Ready") {
-    HomeView(isDemo: true, canTakeDonations: true, onDonate: {}, onStaffGesture: {})
+    HomeView(isDemo: true, canTakeDonations: true, otherLanguage: .arabic,
+             onDonate: {}, onSwitchLanguage: {}, onStaffGesture: {})
 }
 
 #Preview("Reader not ready") {
-    HomeView(isDemo: false, canTakeDonations: false, onDonate: {}, onStaffGesture: {})
+    HomeView(isDemo: false, canTakeDonations: false, otherLanguage: .arabic,
+             onDonate: {}, onSwitchLanguage: {}, onStaffGesture: {})
 }

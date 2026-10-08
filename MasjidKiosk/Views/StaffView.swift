@@ -106,7 +106,7 @@ struct StaffView: View {
                     .font(.system(.title2, design: .monospaced).weight(.semibold))
                     .textSelection(.enabled)
                     .minimumScaleFactor(0.5)
-                Text("sign in with  \(KioskConfig.logServerUser) / \(KioskConfig.logServerPassword)")
+                Text("sign in as  \(KioskConfig.logServerUser)  with the log password")
                     .font(.headline)
                     .foregroundStyle(.secondary)
             }

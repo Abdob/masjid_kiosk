@@ -12,6 +12,11 @@ the Stand's built-in reader through Square's Mobile Payments SDK. Donors:
    moves on. Walking away counts as Skip.
 5. See a thank-you screen, after which the kiosk resets itself.
 
+The home screen has a button that switches the kiosk between **English and
+Arabic**. It goes back to English after each donation, or after a minute if
+nobody donates. Square's own card prompt follows the iPad's system language,
+not this button.
+
 The app's own code never handles card data. It hands Square's SDK the
 amount, Square shows its own card prompt over the app and reads the card on
 the Stand, and the SDK reports back whether the payment went through.
@@ -112,13 +117,14 @@ is written.
 **Downloading it.** The iPad serves its logs on the masjid's network:
 
 ```sh
-curl -u admin:admin -OJ http://<ipad-ip>:8080/log            # today
-curl -u admin:admin -OJ http://<ipad-ip>:8080/log/2026-10-02 # one day
+curl -u admin -OJ http://<ipad-ip>:8080/log            # today
+curl -u admin -OJ http://<ipad-ip>:8080/log/2026-10-02 # one day
 ```
 
 You can also open `http://<ipad-ip>:8080/` in a browser to see every day's
 log. The staff page shows the iPad's address. **The log contains donors'
-phone numbers**, so change `logServerUser` / `logServerPassword`, and keep
+phone numbers**. The user name is `admin` and the password is
+`logServerPassword` in `KioskConfig.swift` (curl asks for it); keep
 the kiosk off any Wi-Fi network the public can join.
 
 ## Kiosk hardening
@@ -144,11 +150,13 @@ MasjidKiosk/
 ├── Donors/DonorDirectory.swift  Square Customer Directory upsert
 ├── Logging/                     day's CSV + HTTP download server
 ├── en.lproj/Localizable.strings all donor-facing wording
+├── ar.lproj/Localizable.strings the same wording in Arabic
 └── Views/                       Home → Amount → Paying → Phone → Thanks, + Staff
 ```
 
 Debug builds can jump straight to a screen for screenshots with
-`-kioskStartStep amount|paying|phone|thanks|failure|unconfirmed`.
+`-kioskStartStep amount|paying|phone|thanks|failure|unconfirmed`, and in
+Arabic with `-kioskLanguage ar`.
 
 ## Build from the command line
 

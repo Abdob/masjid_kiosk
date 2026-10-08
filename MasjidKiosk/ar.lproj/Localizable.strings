@@ -1,0 +1,49 @@
+/* Donor-facing copy for the kiosk, in Arabic. Keys match
+   en.lproj/Localizable.strings; a key missing here falls back to English.
+   %@ is a preformatted amount ("$50"); %d is a whole number. */
+
+/* Home screen */
+"home.title"            = "ادعم مسجدك";
+"home.subtitle"         = "تبرعك يساعد على استمرار مركزنا في خدمة المجتمع";
+"home.donate"           = "تبرّع";
+"home.paused"           = "التبرعات متوقفة مؤقتًا — يرجى طلب المساعدة من الموظفين";
+"home.demoBanner"       = "وضع تجريبي — لن يتم خصم أي مبلغ من البطاقات";
+
+/* Amount screen */
+"amount.title"          = "كم تودّ أن تتبرع؟";
+"amount.other"          = "أو أدخل مبلغًا آخر";
+"amount.range"          = "أي مبلغ من %@ إلى %@";
+"amount.cta.enter"      = "اختر مبلغًا";
+"amount.cta.donate"     = "تبرّع بمبلغ %@";
+
+/* Paying on the Square Stand */
+"payment.title"         = "تبرّع بمبلغ %@";
+"payment.message"       = "يرجى تقريب بطاقتك من قارئ البطاقات أو إدخالها أو تمريرها.";
+"payment.progress.live" = "في انتظار قارئ البطاقات…";
+"payment.progress.demo" = "وضع تجريبي — ستتم الموافقة بعد لحظات…";
+"payment.demoReceipt"   = "وضع تجريبي — لم يتم خصم أي مبلغ.";
+"payment.error.generic"   = "لم تكتمل عملية الدفع. لم يتم خصم أي مبلغ.";
+"payment.error.noNetwork" = "تعذّر الاتصال بشبكة الدفع. لم يتم خصم أي مبلغ.";
+"payment.error.setup"     = "لا يمكن قبول البطاقات على هذا الجهاز حاليًا. لم يتم خصم أي مبلغ. يرجى طلب المساعدة من الموظفين.";
+
+/* Phone number (optional) */
+"phone.thanks"          = "شكرًا لك! تم استلام تبرعك بمبلغ %@.";
+"phone.title"           = "هل تودّ ترك رقم هاتفك؟";
+"phone.subtitle"        = "اختياري — ليحتفظ المسجد بسجل لتبرعك.";
+"phone.placeholder"     = "(555) 555-5555";
+"phone.skip"            = "تخطي";
+"phone.done"            = "تم";
+
+/* Results */
+"thanks.title"          = "جزاك الله خيرًا";
+"thanks.amount"         = "تم استلام تبرعك بمبلغ %@.";
+"thanks.saved"          = "تم تسجيل تبرعك مع رقم هاتفك.";
+"thanks.dua"            = "تقبّل الله منك.";
+"failure.title"         = "لم تكتمل عملية الدفع";
+"unconfirmed.title"     = "يرجى مراجعة الموظفين";
+"unconfirmed.message"   = "لم نتمكن من التأكد من إتمام تبرعك بمبلغ %@. يرجى عدم الدفع مرة أخرى — يمكن لأحد الموظفين التحقق من ذلك.";
+
+/* Shared buttons */
+"common.cancel"         = "إلغاء";
+"common.done"           = "تم";
+"common.tryAgain"       = "حاول مرة أخرى";

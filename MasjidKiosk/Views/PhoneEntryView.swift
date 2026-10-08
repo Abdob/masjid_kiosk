@@ -46,6 +46,8 @@ struct PhoneEntryView: View {
                 .foregroundStyle(phone.digits.isEmpty ? Color(.tertiaryLabel) : Color.primary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, compact ? 6 : 12)
+                // Keep "(555) 123-4567" in that order in Arabic too.
+                .environment(\.layoutDirection, .leftToRight)
 
             Keypad(
                 compact: compact,

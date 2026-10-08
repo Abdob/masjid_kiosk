@@ -28,11 +28,23 @@ final class SquareReader: NSObject, ObservableObject {
         let isReady: Bool
     }
 
-    @Published private(set) var signIn: SignIn = .signedOut
-    @Published private(set) var readers: [Reader] = []
+    // Each change is logged: "why is the kiosk paused" is otherwise only
+    // answerable from the staff page.
+    @Published private(set) var signIn: SignIn = .signedOut {
+        didSet { if signIn != oldValue { NSLog("Square sign-in: \(signIn)") } }
+    }
+    @Published private(set) var readers: [Reader] = [] {
+        didSet {
+            guard readers != oldValue else { return }
+            let list = readers.map { "\($0.name) — \($0.status)" }.joined(separator: "; ")
+            NSLog("Square readers: \(list.isEmpty ? "none" : list)")
+        }
+    }
     /// False when staff have refused location access, which Square requires
     /// for every payment.
-    @Published private(set) var isLocationAllowed = true
+    @Published private(set) var isLocationAllowed = true {
+        didSet { if isLocationAllowed != oldValue { NSLog("Location allowed: \(isLocationAllowed)") } }
+    }
 
     /// True when a donation can be taken right now.
     var isReady: Bool {

@@ -83,6 +83,8 @@ struct Keypad: View {
                 key(systemImage: "delete.left", action: onDelete)
             }
         }
+        // A number pad reads 1-2-3 from the left in Arabic too.
+        .environment(\.layoutDirection, .leftToRight)
     }
 
     private func key(label: String? = nil, systemImage: String? = nil, action: @escaping () -> Void) -> some View {

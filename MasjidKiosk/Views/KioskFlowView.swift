@@ -25,6 +25,7 @@ struct KioskFlowView: View {
 
     @ObservedObject private var reader = SquareReader.shared
     @State private var step: KioskStep = KioskFlowView.initialStep
+    @State private var language = KioskFlowView.initialLanguage
     @State private var idleReturnTask: Task<Void, Never>?
     @State private var showingStaffPage = false
     @State private var hasRunLaunchHooks = false
@@ -51,6 +52,20 @@ struct KioskFlowView: View {
         return .home
     }
 
+    /// Debug-only companion to `-kioskStartStep`: `-kioskLanguage ar`.
+    private static var initialLanguage: KioskLanguage {
+        var language = KioskLanguage.standard
+        #if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if let flagIndex = arguments.firstIndex(of: "-kioskLanguage"),
+           arguments.indices.contains(flagIndex + 1) {
+            language = KioskLanguage(rawValue: arguments[flagIndex + 1]) ?? language
+        }
+        #endif
+        Loc.language = language
+        return language
+    }
+
     /// Live mode needs Square signed in and the Stand's reader ready.
     private var canTakeDonations: Bool {
         service.isDemo || reader.isReady
@@ -60,40 +75,11 @@ struct KioskFlowView: View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
 
-            switch step {
-            case .home:
-                HomeView(
-                    isDemo: service.isDemo,
-                    canTakeDonations: canTakeDonations,
-                    onDonate: { step = .enterAmount },
-                    onStaffGesture: { showingStaffPage = true }
-                )
-
-            case .enterAmount:
-                AmountEntryView(
-                    onCancel: { step = .home },
-                    onConfirm: { dollars in beginPayment(Donation(dollars: dollars)) },
-                    onInteraction: { scheduleIdleReturn(for: step) }
-                )
-
-            case .paying(let donation):
-                PaymentView(donation: donation, service: service)
-
-            case .enterPhone(let donation, _):
-                PhoneEntryView(
-                    donation: donation,
-                    onFinish: finishPhoneStep,
-                    onInteraction: { scheduleIdleReturn(for: step) }
-                )
-
-            case .result(let donation, let result):
-                ResultView(
-                    donation: donation,
-                    result: result,
-                    onRetry: { beginPayment(donation) },
-                    onDone: { step = .home }
-                )
-            }
+            screen
+                .environment(\.layoutDirection, language.layoutDirection)
+                // The screens read their wording through Loc, which SwiftUI
+                // can't observe; a new identity redraws them in the new language.
+                .id(language)
         }
         .animation(.easeInOut(duration: 0.25), value: step)
         .task {
@@ -106,10 +92,69 @@ struct KioskFlowView: View {
             }
         }
         .onChange(of: step) { newStep in
+            // Each donor starts in the standard language.
+            if newStep == .home { setLanguage(.standard) }
             scheduleIdleReturn(for: newStep)
         }
         .sheet(isPresented: $showingStaffPage) {
             StaffView(isDemo: service.isDemo)
+        }
+    }
+
+    @ViewBuilder
+    private var screen: some View {
+        switch step {
+        case .home:
+            HomeView(
+                isDemo: service.isDemo,
+                canTakeDonations: canTakeDonations,
+                otherLanguage: language.other,
+                onDonate: { step = .enterAmount },
+                onSwitchLanguage: switchLanguage,
+                onStaffGesture: { showingStaffPage = true }
+            )
+
+        case .enterAmount:
+            AmountEntryView(
+                onCancel: { step = .home },
+                onConfirm: { dollars in beginPayment(Donation(dollars: dollars)) },
+                onInteraction: { scheduleIdleReturn(for: step) }
+            )
+
+        case .paying(let donation):
+            PaymentView(donation: donation, service: service)
+
+        case .enterPhone(let donation, _):
+            PhoneEntryView(
+                donation: donation,
+                onFinish: finishPhoneStep,
+                onInteraction: { scheduleIdleReturn(for: step) }
+            )
+
+        case .result(let donation, let result):
+            ResultView(
+                donation: donation,
+                result: result,
+                onRetry: { beginPayment(donation) },
+                onDone: { step = .home }
+            )
+        }
+    }
+
+    private func setLanguage(_ new: KioskLanguage) {
+        Loc.language = new
+        language = new
+    }
+
+    /// The donor tapped the language button on the home screen. If they then
+    /// walk away, the kiosk goes back to the standard language by itself.
+    private func switchLanguage() {
+        setLanguage(language.other)
+        idleReturnTask?.cancel()
+        idleReturnTask = Task {
+            try? await Task.sleep(for: .seconds(KioskConfig.amountEntryIdleTimeout))
+            guard !Task.isCancelled, step == .home else { return }
+            setLanguage(.standard)
         }
     }
 
