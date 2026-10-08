@@ -1,0 +1,48 @@
+/* Donor-facing copy for the kiosk.
+   %@ is a preformatted amount ("$50"); %d is a whole number. */
+
+/* Home screen */
+"home.title"            = "Support Your Masjid";
+"home.subtitle"         = "Your donation keeps our community center running";
+"home.donate"           = "Donate";
+"home.paused"        = "Donations are paused — please ask staff for help";
+"home.demoBanner"       = "Demo mode — no cards will be charged";
+
+/* Amount screen */
+"amount.title"          = "How much would you like to give?";
+"amount.other"          = "or enter another amount";
+"amount.range"          = "Any amount from %@ to %@";
+"amount.cta.enter"      = "Choose an amount";
+"amount.cta.donate"     = "Donate %@";
+
+/* Paying on the Square Stand */
+"payment.title"         = "Donate %@";
+"payment.message"       = "Please tap, insert, or swipe your card on the card reader.";
+"payment.progress.live" = "Waiting for the card reader…";
+"payment.progress.demo" = "Demo — approving in a moment…";
+"payment.demoReceipt"   = "Demo mode — no card was charged.";
+"payment.error.generic"   = "The payment didn't go through. No money was taken.";
+"payment.error.noNetwork" = "The kiosk couldn't reach the payment network. No money was taken.";
+"payment.error.setup"     = "This kiosk can't take cards right now. No money was taken. Please ask staff for help.";
+
+/* Phone number (optional) */
+"phone.thanks"          = "Thank you! Your %@ donation was received.";
+"phone.title"           = "Would you like to leave your phone number?";
+"phone.subtitle"        = "Optional — so the masjid can keep a record of your donation.";
+"phone.placeholder"     = "(555) 555-5555";
+"phone.skip"            = "Skip";
+"phone.done"            = "Done";
+
+/* Results */
+"thanks.title"          = "Jazakallahu Khairan";
+"thanks.amount"         = "Your donation of %@ was received.";
+"thanks.saved"          = "We've noted your donation with your phone number.";
+"thanks.dua"            = "May Allah accept it from you.";
+"failure.title"         = "Payment Not Completed";
+"unconfirmed.title"     = "Please See Staff";
+"unconfirmed.message"   = "We couldn't confirm whether your %@ donation went through. Please don't pay again — a staff member can check it for you.";
+
+/* Shared buttons */
+"common.cancel"         = "Cancel";
+"common.done"           = "Done";
+"common.tryAgain"       = "Try Again";
